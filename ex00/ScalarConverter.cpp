@@ -17,31 +17,54 @@ ScalarConverter& ScalarConverter::operator=(const ScalarConverter &cp){
     return *this;
 }
 
-void convert_int(int a)
+void  ScalarConverter::convert_int(int a, bool is_overflow)
 {
-    if (a < ' ' || a > 126)
-        std::cout << "char : "   << "Non displayable"  << std::endl;
-    else
-        std::cout << "char : "   << static_cast<char>(a)  << std::endl;
-    std::cout << "int : "    << static_cast<int>(a) << std::endl;
-    std::cout << "float : "  << std::fixed  << std::setprecision(1) << static_cast<float>(a) << "f" <<  std::endl;
-    std::cout << "double : " << std::fixed  << std::setprecision(1) << static_cast<double>(a) << std::endl;
-}
-void convert_flaot(double a)
-{
-    if (a < ' ' || a > 126)
-        std::cout << "char : "   << "Non displayable"  << std::endl;
-    else
-        std::cout << "char : "   << static_cast<char>(a)  << std::endl;
-    if (a)
+    if(!is_overflow)
+    {
+        if (a < ' ' || a > 126)
+            std::cout << "char : "   << "Non displayable"  << std::endl;
+        else
+            std::cout << "char : "   << static_cast<char>(a)  << std::endl;
         std::cout << "int : "    << static_cast<int>(a) << std::endl;
+        std::cout << "float : "  << std::fixed  << std::setprecision(1) << static_cast<float>(a) << "f" <<  std::endl;
+        std::cout << "double : " << std::fixed  << std::setprecision(1) << static_cast<double>(a) << std::endl;
+    }
     else
-        std::cout << "int : "    << "impossible" << std::endl;
-    std::cout << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
-    std::cout << "double : "  << static_cast<double>(a) << std::endl;
+    {
+        std::cout << "char : "   << "Impossible"  << std::endl;
+        std::cout << "int : "    << "Impossible" << std::endl;
+        std::cout << "float : "   << "Impossible"<<  std::endl;
+        std::cout << "double : "  << "Impossible" << std::endl;
+    }
+}
+void ScalarConverter::convert_flaot(double a, bool is_overflow, bool is_nan_inf)
+{
+    if (!is_overflow)
+    {
+        if (is_nan_inf)
+            std::cout << "char : "   << "Impossible"  << std::endl;
+        else if (a < ' ' || a > 126)
+            std::cout << "char : "   << "Non displayable"  << std::endl;
+        else
+            std::cout << "char : "   << static_cast<char>(a)  << std::endl;
+        if (is_nan_inf)
+            std::cout << "int : "   << "Impossible"  << std::endl;
+        else 
+            std::cout << "int : "    << static_cast<int>(a) << std::endl;
+        std::cout << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
+        std::cout << "double : "  << static_cast<double>(a) << std::endl;
+    }
+    else
+    {
+        std::cout << "char : "   << "Impossible"  << std::endl;
+        std::cout << "int : "    << "Impossible" << std::endl;
+        std::cout << "float : "   << "Impossible"<<  std::endl;
+        std::cout << "double : "  << "Impossible" << std::endl;
+    }
+   
 }
 
-bool is_all_num(const std::string &str)
+bool ScalarConverter::is_all_num(const std::string &str)
 {
     int i = 0;
     if (str[0] == '-')
@@ -55,13 +78,14 @@ bool is_all_num(const std::string &str)
     return true;
 }
 
-bool is_valid(const std::string &str)
+bool ScalarConverter::is_valid(const std::string &str)
 {
     bool has_point = false;
 
     size_t i = 0;
     size_t len = str.size();
     if (str[0] == '-')
+        i++;
     while (i < len)
     {
         if (str[i] == '.' && !has_point)
@@ -72,8 +96,8 @@ bool is_valid(const std::string &str)
         } 
         if (str[i] == '.')
             return false; // invalid arg
-        if (!std::isdigit(str[i]) && str[i] != 'f' && i != len - 1)
-            return false; // invalid arg
+        if (!std::isdigit(str[i]) && (str[i] != 'f' || i != len - 1))
+            return false; // invalif arg
         i++;
     }
     return true;
@@ -82,25 +106,40 @@ bool is_valid(const std::string &str)
 void ScalarConverter::convert(const std::string str){
     if (str.size() == 1 && std::isalpha(str[0]))
     {
-        convert_int(str[0]);
+        convert_int(str[0], 0);
     }else if (is_all_num(str)){
         int tmp;
-        std::stringstream ss;
-        ss << str;
-        ss >> tmp;
-        convert_int(tmp);
-    }
-    else if(!str.compare("nan"))
-    {
-        // size_t t = 0xfff0000000000001;
-        convert_flaot(sqrt(-2));
+        std::stringstream st;
+        std::stringstream sw;
+        st << str;
+        st >> tmp;
+        sw << tmp;
+        convert_int(tmp, st.str() != sw.str());
     }
     else if (is_valid(str))
     {
-        double tmp;
-        std::stringstream ss;
-        ss << str;
-        ss >> tmp;
-        convert_flaot(tmp);
+        errno = 0;
+        if (str[str.length() - 1] == 'f')
+        {
+            float a = strtof(str.c_str(), NULL);
+            convert_flaot(a, errno == ERANGE, 0);
+        }else
+        {
+            double a = strtod(str.c_str(), NULL);
+            convert_flaot(a, errno == ERANGE, 0);
+        } 
     }
+    else if(!str.compare("nan") || !str.compare("nanf"))
+    {
+        convert_flaot(NAN, 0, 1);
+    }
+    else if(!str.compare("+inf"))
+    {
+        convert_flaot(INFINITY, 0, 1);
+    }
+    else if(!str.compare("-inf"))
+    {
+        convert_flaot(-INFINITY, 0, 1);
+    }else
+        std::cout << "Invalid input \n";
 }
