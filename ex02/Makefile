@@ -1,10 +1,10 @@
-NAME = Conv
+NAME = Poly 
 
 CPPFLAG = -Wall -Wextra -Werror -std=c++98 -g
 
-OBJ = main.o ScalarConverter.o 
+OBJ = main.o Base.o
 
-INCLUDE = ScalarConverter.hpp
+INCLUDE = Serializer.hpp
 
 all : $(NAME)
 

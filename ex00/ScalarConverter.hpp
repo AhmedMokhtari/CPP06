@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -5,6 +7,9 @@
 #include <cmath>
 #include <cstdio>
 #include <cerrno>
+#include <climits>
+
+
 class ScalarConverter{
     private:
         static void convert_int(int a, bool is_overflow);

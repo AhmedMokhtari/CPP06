@@ -1,10 +1,10 @@
-NAME = Conv
+NAME = Serializer
 
 CPPFLAG = -Wall -Wextra -Werror -std=c++98 -g
 
-OBJ = main.o ScalarConverter.o 
+OBJ = main.o Serializer.o 
 
-INCLUDE = ScalarConverter.hpp
+INCLUDE = Serializer.hpp
 
 all : $(NAME)
 
