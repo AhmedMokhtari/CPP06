@@ -65,8 +65,8 @@ void ScalarConverter::convert_flaot(float a, bool is_overflow, bool is_nan_inf)
         if (a > FLT_MAX || std::fabs(a) < FLT_MIN)
             std::cout << "float : "   << "Impossible"  << std::endl;
         else 
-            std::cout << std::setprecision(7) << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
-        std::cout << std::setprecision(15) << "double : "  << static_cast<double>(a) << std::endl;
+            std::cout  << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
+        std::cout  << "double : "  << static_cast<double>(a) << std::endl;
     }
     else
     {
@@ -90,19 +90,15 @@ void ScalarConverter::convert_double(double a, bool is_overflow, bool is_nan_inf
             std::cout << "char : "   << "Non displayable"  << std::endl;
         else
             std::cout << "char : "   << static_cast<char>(a)  << std::endl;
-        if (a > INT_MAX || a < INT_MIN)
-            std::cout << "int : "   << "Impossible"  << std::endl;
-        else if (is_nan_inf)
+        if (a > INT_MAX || a < INT_MIN || is_nan_inf)
             std::cout << "int : "   << "Impossible"  << std::endl;
         else 
             std::cout << "int : " << static_cast<int>(a) << std::endl;
-        printf("f is %f\n", static_cast<float>(a));
-        std::cout << "a is " << (a < FLT_MIN ) <<std::endl;
         if (a > FLT_MAX || std::fabs(a) < FLT_MIN)
             std::cout << "float : "   << "Impossible"  << std::endl;
         else 
             std::cout << std::setprecision(7) << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
-        std::cout << std::setprecision(15) << "double : "  << static_cast<double>(a) << std::endl;
+        std::cout << std::setprecision(15) << "double : "  <<a << std::endl;
     }
     else
     {
