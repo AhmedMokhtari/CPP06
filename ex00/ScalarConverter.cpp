@@ -42,41 +42,42 @@ void  ScalarConverter::convert_int(int a, bool is_overflow)
         std::cout << "double : "  << "Impossible" << std::endl;
     }
 }
-void ScalarConverter::convert_flaot(float a, bool is_overflow, bool is_nan_inf)
-{
-    if (!is_overflow)
-    {
-        if (a > 127 || a < -128)
-            std::cout << "char : "   << "Impossible"  << std::endl;
-        else if (is_nan_inf)
-            std::cout << "char : "   << "Impossible"  << std::endl;
-        else if (a < ' ' || a > 126)
-            std::cout << "char : "   << "Non displayable"  << std::endl;
-        else
-            std::cout << "char : "   << static_cast<char>(a)  << std::endl;
-        if (a > INT_MAX || a < INT_MIN)
-            std::cout << "int : "   << "Impossible"  << std::endl;
-        else if (is_nan_inf)
-            std::cout << "int : "   << "Impossible"  << std::endl;
-        else 
-            std::cout << "int : " << static_cast<int>(a) << std::endl;
-        printf("f is %f\n", static_cast<float>(a));
-        std::cout << "a is " << (a < FLT_MIN ) <<std::endl;
-        if (a > FLT_MAX || std::fabs(a) < FLT_MIN)
-            std::cout << "float : "   << "Impossible"  << std::endl;
-        else 
-            std::cout  << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
-        std::cout  << "double : "  << static_cast<double>(a) << std::endl;
-    }
-    else
-    {
-        std::cout << "char : "   << "Impossible"  << std::endl;
-        std::cout << "int : "    << "Impossible" << std::endl;
-        std::cout << "float : "   << "Impossible"<<  std::endl;
-        std::cout << "double : "  << "Impossible" << std::endl;
-    }
+
+// void ScalarConverter::convert_flaot(float a, bool is_overflow, bool is_nan_inf)
+// {
+//     if (!is_overflow)
+//     {
+//         if (a > 127 || a < -128)
+//             std::cout << "char : "   << "Impossible"  << std::endl;
+//         else if (is_nan_inf)
+//             std::cout << "char : "   << "Impossible"  << std::endl;
+//         else if (a < ' ' || a > 126)
+//             std::cout << "char : "   << "Non displayable"  << std::endl;
+//         else
+//             std::cout << "char : "   << static_cast<char>(a)  << std::endl;
+//         if (a > INT_MAX || a < INT_MIN)
+//             std::cout << "int : "   << "Impossible"  << std::endl;
+//         else if (is_nan_inf)
+//             std::cout << "int : "   << "Impossible"  << std::endl;
+//         else 
+//             std::cout << "int : " << static_cast<int>(a) << std::endl;
+//         printf("f is %f\n", static_cast<float>(a));
+//         std::cout << "a is " << (a < FLT_MIN ) <<std::endl;
+//         if (a > FLT_MAX || std::fabs(a) < FLT_MIN)
+//             std::cout << "float : "   << "Impossible"  << std::endl;
+//         else 
+//             std::cout  << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
+//         std::cout  << "double : "  << static_cast<double>(a) << std::endl;
+//     }
+//     else
+//     {
+//         std::cout << "char : "   << "Impossible"  << std::endl;
+//         std::cout << "int : "    << "Impossible" << std::endl;
+//         std::cout << "float : "   << "Impossible"<<  std::endl;
+//         std::cout << "double : "  << "Impossible" << std::endl;
+//     }
    
-}
+// }
 
 void ScalarConverter::convert_double(double a, bool is_overflow, bool is_nan_inf)
 {
@@ -97,8 +98,8 @@ void ScalarConverter::convert_double(double a, bool is_overflow, bool is_nan_inf
         if (a > FLT_MAX || std::fabs(a) < FLT_MIN)
             std::cout << "float : "   << "Impossible"  << std::endl;
         else 
-            std::cout << std::setprecision(7) << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
-        std::cout << std::setprecision(15) << "double : "  <<a << std::endl;
+            std::cout << "float : "   << static_cast<float>(a) << "f" <<  std::endl;
+        std::cout  << "double : "  <<a << std::endl;
     }
     else
     {
@@ -131,8 +132,6 @@ bool ScalarConverter::is_valid(const std::string &str)
     size_t len = str.size();
     if (str[0] == '-')
         i++;
-    // if (str[0] == '.')
-        // return false;
     while (i < len)
     {
         if (str[i] == '.' && !has_point && i != 0 && i != len -1 && str[i - 1] != '-')
@@ -142,12 +141,19 @@ bool ScalarConverter::is_valid(const std::string &str)
             continue;
         } 
         if (str[i] == '.')
-            return false; // invalid arg
+            return false; 
         if (!std::isdigit(str[i]) && (str[i] != 'f' || i != len - 1 || !std::isdigit(str[i - 1])))
-            return false; // invalif arg
+            return false;
         i++;
     }
     return true;
+}
+void ScalarConverter::hand_inf_nan(const std::string &str)
+{
+    std::cout << "char : "   << "Impossible"  << std::endl;
+    std::cout << "int : "    << "Impossible" << std::endl;
+    std::cout << "float : "   << str << "f" <<  std::endl;
+    std::cout << "double : "  << str << std::endl;
 }
 
 void ScalarConverter::convert(const std::string str){
@@ -178,15 +184,15 @@ void ScalarConverter::convert(const std::string str){
     }
     else if(!str.compare("nan") || !str.compare("nanf"))
     {
-        convert_flaot(NAN, 0, 1);
+        hand_inf_nan("nan");
     }
-    else if(!str.compare("+inf"))
+    else if(!str.compare("+inf") || !str.compare("+inff"))
     {
-        convert_flaot(INFINITY, 0, 1);
+        hand_inf_nan("+inf"); 
     }
-    else if(!str.compare("-inf"))
+    else if(!str.compare("-inf")  || !str.compare("-inff") )
     {
-        convert_flaot(-INFINITY, 0, 1);
+        hand_inf_nan("-inf"); 
     }else
         std::cout << "Invalid input \n";
 }

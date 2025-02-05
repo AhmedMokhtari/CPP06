@@ -5,8 +5,9 @@
 #include "Data.hpp"
 
 class Serializer{
-    public:
+    private:
         Serializer();
+    public:
         ~Serializer();
         Serializer(const Serializer& cp);
         Serializer& operator=(const Serializer &cp);
