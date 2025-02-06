@@ -46,7 +46,7 @@ void identify(Base& p){
     }
     catch(std::exception &e)
     {
-        std::cout << e.what() << std::endl;
+        // std::cout << e.what() << std::endl;
     }
     try{
         B &a = dynamic_cast<B&>(p);
@@ -56,7 +56,7 @@ void identify(Base& p){
     }
     catch(std::exception &e)
     {
-        std::cout << e.what() << std::endl;
+        // std::cout << e.what() << std::endl;
     }
     try{
         C &a = dynamic_cast<C&>(p);
@@ -66,7 +66,7 @@ void identify(Base& p){
     }
     catch(std::exception &e)
     {
-        std::cout << e.what() << std::endl;
+        // std::cout << e.what() << std::endl;
     }
 }
 
@@ -76,8 +76,8 @@ int main() {
     Base *p1 = new A;
 
     identify(p);
-    identify(p1);
     identify(*p);
+    identify(p1);
 
     delete p;
     delete p1;
